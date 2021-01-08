@@ -133,6 +133,7 @@ export class HomeAdminComponent implements OnInit {
       if(this.resNum >= parseInt(data.count)){
         // this.toastr.error("to many","error");
         console.log("too many reservations")
+        alert("cant reserve more tickets than available")
         return
       }
       console.log(this.resNum)
