@@ -13,6 +13,7 @@ export class LoginComponent implements OnInit {
 
   public loginForm: FormGroup
   Uname: string
+  error: string;
   constructor(private loginService: LoginService,
               private router: Router,
               private formBuilder: FormBuilder) {
@@ -22,7 +23,6 @@ export class LoginComponent implements OnInit {
       // ['default value', [validators]
       username: ['', [Validators.required, Validators.minLength(4)]],
       password: ['', [Validators.required, Validators.minLength(4)]],
-      number: ['', [Validators.required,Validators.pattern("^[0-9]*$")]]
     })
   }
 
@@ -37,13 +37,17 @@ export class LoginComponent implements OnInit {
     return this.loginForm.get('password')
   }
 
-  public get number(){
-    return this.loginForm.get('number')
-  }
 
   public submitForm(credentials){
     this.loginService.login(credentials).subscribe(data => {
+      console.log(data)
       this.router.navigate(['/home'])
+    },
+    error => {
+      console.log(error)
+      this.error = error;
+       alert("Error loging in")
+
     })
     this.Uname = credentials.username
     console.log(this.Uname)

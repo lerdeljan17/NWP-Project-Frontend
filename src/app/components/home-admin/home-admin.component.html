@@ -1,0 +1,136 @@
+<app-header [reservationCountStr]="countOfReservations"></app-header>
+<br>
+<h5 *ngIf = "isAdmin()" >Add new user</h5>
+<div class="col-sm-4"  >
+    <!-- [formGroup]="loginForm" vezuje ovu konkretnu formu sa loginForm atributom iz modela -->
+    <form [formGroup]="addUserForm" (ngSubmit)="submitForm(addUserForm.value)" *ngIf = "isAdmin()">
+        <div class="form-group">
+            <!-- formControlName atribut vezuje ovo polje forme sa poljem definisanim u FormGroup -->
+            <input type="text" class="form-control"  placeholder="Enter username" formControlName="username">
+            <!-- '?' operator proverava da li je username.errors === null, 
+                ako jeste, odmah vraca false sprecavajuci da program pukne,
+                zato sto ne mozemo da procitamo .required od null -->
+            <div class="error-message" *ngIf="username.errors?.required"> username is required! </div>
+        </div>
+        <div class="form-group">
+            <input type="password" class="form-control" placeholder="Enter password" formControlName="password">
+            <div class="error-message" *ngIf="password.errors?.required"> password is required! </div>
+        </div>
+    
+        <button type="submit" class="btn btn-primary" [disabled]="!addUserForm.valid">Submit</button>
+    </form>
+    <div id="selectedG" >
+        <select (change)="onChange($event.target.value)" *ngIf = "isAdmin()">
+          <option >admin</option>
+          <option >user</option>
+        </select>
+        <div>
+</div>
+<br>
+
+
+<h5 *ngIf = "isAdmin()" >Add new ticket</h5>
+<div class="col-sm-8">
+    <!-- [formGroup]="loginForm" vezuje ovu konkretnu formu sa loginForm atributom iz modela -->
+    <form [formGroup]="addTicketForm" (ngSubmit)="addTicket(addTicketForm.value)" *ngIf = "isAdmin()">
+        <div class="form-group">
+            <!-- formControlName atribut vezuje ovo polje forme sa poljem definisanim u FormGroup -->
+            <input type="date" class="form-control"  placeholder="Enter depart date" formControlName="departDate">
+            <!-- '?' operator proverava da li je username.errors === null, 
+                ako jeste, odmah vraca false sprecavajuci da program pukne,
+                zato sto ne mozemo da procitamo .required od null -->
+            <div class="error-message" *ngIf="departDate.errors?.required"> Depart date is required! </div>
+        </div>
+        <div class="form-group">
+            <input type="date" class="form-control" placeholder="Enter return date" formControlName="returnDate">
+            <div class="error-message" *ngIf="returnDate.errors?.required"> return date is required </div>
+        </div>
+
+        <div class="form-group">
+            <input type="number" class="form-control" placeholder="Enter count" formControlName="count">
+            <div class="error-message" *ngIf="count.errors?.required"> count is required </div>
+        </div>
+    
+        <div>
+            <input type="checkbox" [checked]="oneWay" (change)="oneWay = !oneWay" />One way</div> 
+
+        <button type="submit" class="btn btn-primary" [disabled]="!addTicketForm.valid">Submit</button>
+    </form>
+    <select type="number" [(ngModel)]="selectedFlight" *ngIf = "isAdmin()">
+        <option *ngFor="let f of flights" [ngValue]="f">{{f.origin.name}} -> {{f.destination.name}}</option>
+      </select>
+
+      <select type="number" [(ngModel)]="selectedCompany" *ngIf = "isAdmin()">
+        <option *ngFor="let c of companies" [ngValue]="c">{{c.name}}</option>
+      </select>
+
+</div>
+
+<br>
+<hr>
+<h4>Filter tickets</h4>
+<form [formGroup]="filterTicketsFrorm" (ngSubmit)="filterTickets(filterTicketsFrorm.value)">
+    <div class="form-group">
+        <input type="date" class="form-control"   placeholder="Enter depart date" formControlName="departDateT"> 
+    </div>
+    <div class="form-group">
+        <input type="date" class="form-control"  placeholder="Enter return date" formControlName="returnDateT">
+    </div>
+
+    <p>Origin</p>
+    <select type="number" [(ngModel)]="selectedOrigin" [ngModelOptions]="{standalone: true}">
+        <option *ngFor="let o of cities" [ngValue]="o">{{o.name}}</option>
+      </select>
+
+    <p>Destination</p>
+      <select type="number" [(ngModel)]="selectedDestination" [ngModelOptions]="{standalone: true}">
+        <option *ngFor="let d of cities" [ngValue]="d">{{d.name}}</option>
+      </select>
+
+    <button type="submit" class="btn btn-primary">Filter</button>
+     
+</form>
+
+
+<br><hr>
+<div id="selectedWay">
+    <select (change)="onChangeSelectedWay($event.target.value)">
+      <option >All</option>
+      <option >oneWay</option>
+      <option >TwoWay</option>
+    </select>
+    <div>
+<br>
+
+<input  *ngIf = "!isAdmin()" [(ngModel)] ="resNum" type="number" value="" min="1">
+
+<br>
+<br>
+
+<table>
+    <tr>
+        <th>One way</th> 
+        <th>Origin</th> 
+        <th>Destination</th>
+        <th>Depart</th>
+        <th>Return</th>
+        <th>Company</th>
+        <th>Count</th>
+    </tr>
+    <tr *ngFor="let ticket of tickets">
+        <td>{{ticket.oneWay}}</td>
+        <td>{{ticket.origin}}</td>
+        <td>{{ticket.destination}}</td>
+        <td>{{ticket.departDate}}</td>
+        <td>{{ticket.returnDate}}</td>
+        <td (click)="company(ticket.company)">{{ticket.company}}</td>
+        <td>{{ticket.count}}</td>
+        <!-- rounterLink uzima za vrednost niz, prvi parametar u nizu je string, 
+            drugi je number i bice konkatenirani da bi se dobio url -->
+        <td *ngIf = "isAdmin()"><input type="button"  [routerLink]="['/ticket/edit',ticket.id]" value="Edit"></td>
+        <td *ngIf = "isAdmin()"><input type="button" (click)="deleteTicket(ticket.id)" value="Delete"></td>
+        <td *ngIf = "!isAdmin()"><input type="button" (click)="reserve(ticket)" value="Reserve"></td>
+        <!-- <td *ngIf = "!isAdmin()"><input type="number" value="" min="1"></td> -->
+
+    </tr>
+</table>

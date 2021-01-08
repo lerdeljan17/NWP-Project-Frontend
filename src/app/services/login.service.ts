@@ -3,12 +3,13 @@ import { HttpClient, HttpParams ,HttpHeaders} from '@angular/common/http';
 import { Credentials } from '../models/credentials.model';
 import { map } from 'rxjs/operators'
 
+
 @Injectable({
   providedIn: 'root'
 })
 export class LoginService implements OnDestroy {
 
-  private readonly loginUrl = 'http://localhost:8080/login'
+  private readonly loginUrl = 'http://localhost:8080/api/users/login'
   uname: string
   constructor(private http: HttpClient) { }
 
@@ -19,19 +20,24 @@ export class LoginService implements OnDestroy {
   login(credentials) {
     let httpParams = new HttpParams()
     httpParams.append("username", credentials.username)
-    return this.http.get(this.loginUrl, {
+    let bodyO = {
+      username: credentials.username,
+      password: credentials.password,
+    }
+    return this.http.post(this.loginUrl,bodyO, {
       params: {
-        username: credentials.username,
-        password: credentials.password,
-        duration: credentials.number
+        
       }, headers: {
-
+        skip: "true"
       }
     }).pipe(map((responseData: Credentials) => {
       console.log(responseData)
-      localStorage.setItem("jwt", responseData.JWT)
-      // localStorage.setItem("username",responseData.username)
-      this.uname = responseData.username
+      // localStorage.setItem("jwt", responseData.JWT)
+      localStorage.setItem("username",responseData.username)
+      localStorage.setItem("userType",responseData.userType)
+      localStorage.setItem("jwt",responseData.jwt)
+      //localStorage.setItem("id",responseData.id)
+      //this.uname = responseData.username
     }))
   }
 
@@ -65,7 +71,25 @@ export class LoginService implements OnDestroy {
 
 
   logout() {
+    //localStorage.removeItem("jwt")
+    localStorage.removeItem("username")
+    localStorage.removeItem("userType")
     localStorage.removeItem("jwt")
-    // localStorage.removeItem("username")
+
+
   }
+
+  getJwt(){
+    return localStorage.getItem("jwt");
+  }
+
+  userLogged(){
+    if(localStorage.getItem("username") != undefined){
+      return true
+    }else{
+      return false
+    }
+  }
+
+  
 }

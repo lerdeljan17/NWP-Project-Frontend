@@ -1,0 +1,5 @@
+<header>
+    Username: {{username}} ||  user type: {{userType}} || {{reservationCountStr}}
+    <button type="button" class="btn btn-primary"  *ngIf = "!isAdmin()"  [routerLink]="['/reservations']" >Reservations</button>
+    <button type="button" class="btn btn-primary" (click)="logout()">Log out</button>
+</header>

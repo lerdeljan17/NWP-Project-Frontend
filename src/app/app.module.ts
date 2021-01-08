@@ -2,39 +2,51 @@ import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common'
 import { ReactiveFormsModule } from '@angular/forms';
-import { HttpClientModule } from '@angular/common/http';
+import { HttpClientModule,HTTP_INTERCEPTORS } from '@angular/common/http';
+import { HttpErrorInterceptor } from './http-error.interceptor';
+import { FormsModule } from '@angular/forms';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { UserListComponent } from './components/user-list/user-list.component';
-import { UserDetailsComponent } from './components/user-details/user-details.component';
 import { LoginComponent } from './components/login/login.component';
-import { NavbarComponent } from './components/navbar/navbar.component';
-import { DatePipeComponentComponent } from './components/date-pipe-component/date-pipe-component.component';
-import { EditComponent } from './components/edit/edit.component';
-import { GroupsComponent } from './components/groups/groups.component';
-import { GroupMemebersComponent } from './components/group-memebers/group-memebers.component';
+import { HeaderComponent } from './components/header/header.component';
+import { HomeAdminComponent } from './components/home-admin/home-admin.component';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
+import { ToastrModule } from 'ngx-toastr';
+import { JWTInterceptor } from './interceptor';
+import { EditTicketComponent } from './services/edit-ticket/edit-ticket.component';
+import { ReservationsComponent } from './components/reservations/reservations.component';
+import { CompanyComponent } from './components/company/company.component';
 @NgModule({
   declarations: [
     AppComponent,
-    UserListComponent,
-    UserDetailsComponent,
     LoginComponent,
-    NavbarComponent,
-    DatePipeComponentComponent,
-    EditComponent,
-    GroupsComponent,
-    GroupMemebersComponent
+    HeaderComponent,
+    HomeAdminComponent,
+    EditTicketComponent,
+    ReservationsComponent,
+    CompanyComponent
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
     ReactiveFormsModule,
     HttpClientModule,
-    CommonModule
+    CommonModule,
+    FormsModule,
+    BrowserAnimationsModule, // required animations module
+    ToastrModule.forRoot(), // ToastrModule added
   ],
-  providers: [],
+  providers: [{
+
+    provide: HTTP_INTERCEPTORS,
+
+    useClass: JWTInterceptor,
+
+    multi: true
+
+  }],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

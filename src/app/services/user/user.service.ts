@@ -11,7 +11,7 @@ import { Observable } from 'rxjs';
 })
 export class UserService {
 
-  private readonly usersUrl = 'http://localhost:8080/users'
+  private readonly usersUrl = 'http://localhost:8080/api/users'
   private users: Observable<User[]>
 
   constructor(private http: HttpClient) {
@@ -22,6 +22,17 @@ export class UserService {
    public getUsers(): Observable<User[]> {
      return this.users
    }
+
+   public userCountBooking(username): Observable<BigInteger> {
+    let count = this.http.get<BigInteger>(this.usersUrl.concat("/userCountBooking"), {
+      params: {
+        username:username
+      }, headers: {
+        //Authorization: 'Bearer '.concat(localStorage.getItem("jwt"))
+      }
+    })
+    return count
+  }
 
    public fetchUsers(): Observable<User[]> {
      this.users = this.http.get<User[]>(this.usersUrl, {
@@ -45,15 +56,15 @@ export class UserService {
     // console.log(s)
    }
 
-   public addUser(u){
+   public addUser(u,userType){
     let bodyO = {
-      id : u.number,
-      firstName : u.firstName,
-      lastName : u.lastName
+      username : u.username,
+      password : u.password,
+      userType: userType
     }
-    return this.http.post(this.usersUrl,bodyO,{
+    return this.http.post(this.usersUrl.concat("/register"),bodyO,{
       headers: {
-        Authorization: 'Bearer '.concat(localStorage.getItem("jwt"))
+       // Authorization: 'Bearer '.concat(localStorage.getItem("jwt"))
       }
     })
     //this.fetchUsers()

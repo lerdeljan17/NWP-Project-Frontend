@@ -1,0 +1,36 @@
+<app-header></app-header>
+<br>
+<hr>
+<h5 >Edit ticket</h5>
+<div class="col-sm-8">
+    <!-- [formGroup]="loginForm" vezuje ovu konkretnu formu sa loginForm atributom iz modela -->
+    <form [formGroup]="editTicketForm" (ngSubmit)="editTicket(editTicketForm.value)">
+        <div class="form-group">
+            <!-- formControlName atribut vezuje ovo polje forme sa poljem definisanim u FormGroup -->
+            <input type="date" class="form-control"  [(ngModel)]="ticket.departDate"  placeholder="Enter depart date" formControlName="departDate">
+            <!-- '?' operator proverava da li je username.errors === null, 
+                ako jeste, odmah vraca false sprecavajuci da program pukne,
+                zato sto ne mozemo da procitamo .required od null -->
+        </div>
+        <div class="form-group">
+            <input type="date" class="form-control" [(ngModel)]="ticket.returnDate" placeholder="Enter return date" formControlName="returnDate">
+        </div>
+
+        <div class="form-group">
+            <input type="number" [(ngModel)]="ticket.count" class="form-control" placeholder="Enter count" formControlName="count">
+        </div>
+    
+        <div>
+            <input type="checkbox" [checked]="oneWay" (change)="oneWay = !oneWay" />One way</div> 
+
+        <button type="submit" class="btn btn-primary" [disabled]="!editTicketForm.valid">Submit</button>
+    </form>
+    <select type="number" [(ngModel)]="selectedFlight">
+        <option *ngFor="let f of flights" [ngValue]="f">{{f.origin.name}} -> {{f.destination.name}}</option>
+      </select>
+
+      <select type="number" [(ngModel)]="selectedCompany" >
+        <option *ngFor="let c of companies" [ngValue]="c">{{c.name}}</option>
+      </select>
+
+</div>
