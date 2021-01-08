@@ -60,14 +60,7 @@ export class EditTicketComponent implements OnInit {
 
     
     public editTicket(data){
-      // let companyID
-      // this.companies.forEach((currentValue,index) => {
-      //   if( currentValue.name === this.selectedCompany){
-      //       //console.log(currentValue.id)
-      //       //this.companies.splice(index, 1);
-      //      companyID = currentValue.id
-      //   }
-      // });
+
 
       let bodyO = {
         oneWay : this.oneWay,
@@ -86,6 +79,10 @@ export class EditTicketComponent implements OnInit {
         this.ticketService.editTicket(bodyO,id).subscribe(data =>{
           this.router.navigate["/home"]
         })
+      },(error) => {
+        console.log(error);
+        alert("Error editing ticket")
+
       })
 
       // console.log(this.selectedCompany.id)
