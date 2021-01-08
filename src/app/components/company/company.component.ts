@@ -86,6 +86,7 @@ export class CompanyComponent implements OnInit {
       this.companyService.addComapny(name).subscribe(data=>{},(error) => {
         console.log(error);
         alert("Error adding company")
+        
 
       })
     }
